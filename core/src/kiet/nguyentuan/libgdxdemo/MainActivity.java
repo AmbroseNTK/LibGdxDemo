@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 public class MainActivity extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -17,8 +18,13 @@ public class MainActivity extends ApplicationAdapter {
 
 	Sprite mouse;
 	Sprite cheese;
+	Sprite floor;
+	Sprite winPanel;
 
 	boolean win;
+
+	Rectangle cheeseRec;
+	Rectangle mouseRec;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -30,6 +36,10 @@ public class MainActivity extends ApplicationAdapter {
 		mouse.setPosition(20,20);
 		cheese=new Sprite(cheeseTexture);
 		cheese.setPosition(400,300);
+		floor=new Sprite(floorTexture);
+		floor.setPosition(0,0);
+		winPanel=new Sprite(winTexture);
+		winPanel.setPosition(170,60);
 		win=false;
 	}
 
@@ -40,8 +50,9 @@ public class MainActivity extends ApplicationAdapter {
 		checkKeyboard();
 		checkWin();
 		batch.begin();
-		mouse.draw(batch);
+		floor.draw(batch);
 		cheese.draw(batch);
+		mouse.draw(batch);
 		if(win)
 			batch.draw(winTexture,170,60);
 		batch.end();
@@ -57,19 +68,18 @@ public class MainActivity extends ApplicationAdapter {
 	}
 	private void checkKeyboard(){
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			mouse.setX(mouse.getX()-1);
+			mouse.translateX(-1);
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			mouse.setX(mouse.getX()+1);
+			mouse.translateX(1);
 		if(Gdx.input.isKeyPressed(Input.Keys.UP))
-			mouse.setY(mouse.getY()+1);
+			mouse.translateY(1);
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-			mouse.setY(mouse.getY()-1);
+			mouse.translateY(-1);
 	}
 	private void checkWin(){
-		if((mouse.getX()>cheese.getX())
-				&&(mouse.getX()+mouseTexture.getWidth()<cheese.getX()+cheeseTexture.getWidth())
-				&&(mouse.getY()>cheese.getY())
-				&&(mouse.getY()+mouseTexture.getHeight()<cheese.getY()+cheeseTexture.getHeight()))
+		cheeseRec=cheese.getBoundingRectangle();
+		mouseRec=mouse.getBoundingRectangle();
+		if(cheeseRec.contains(mouseRec))
 			win=true;
 	}
 }
