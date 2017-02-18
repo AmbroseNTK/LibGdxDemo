@@ -5,11 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
+import com.badlogic.gdx.utils.Array;
 
 public class MainActivity extends ApplicationAdapter {
 
@@ -20,7 +25,7 @@ public class MainActivity extends ApplicationAdapter {
 	Texture floorTexture;
 	Texture winTexture;
 
-	BaseActor mouse;
+	AnimateActor mouse;
 	BaseActor cheese;
 	BaseActor floor;
 	BaseActor winPanel;
@@ -30,6 +35,8 @@ public class MainActivity extends ApplicationAdapter {
 	Rectangle cheeseRec;
 	Rectangle mouseRec;
 
+	Animation animation;
+
 	@Override
 	public void create () {
 		mouseTexture=new Texture("mouse.png");
@@ -37,7 +44,7 @@ public class MainActivity extends ApplicationAdapter {
 		floorTexture=new Texture("tiles.jpg");
 		winTexture=new Texture("you-win.png");
 
-		mouse=new BaseActor(mouseTexture);
+		mouse=new AnimateActor(mouseTexture);
 		mouse.setPosition(20,20);
 		cheese=new BaseActor(cheeseTexture);
 		cheese.setPosition(400,300);
@@ -47,13 +54,26 @@ public class MainActivity extends ApplicationAdapter {
 		winPanel.setPosition(170,60);
 		winPanel.setVisible(false);
 
+		win=false;
+
+		TextureRegion[] frame=new TextureRegion[4];
+		for(int i=0;i<4;i++){
+			String fileName="mouse"+i+".png";
+			Texture t=new Texture(fileName);
+			t.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			frame[i]=new TextureRegion(t);
+		}
+		Array<TextureRegion> framesArray=new Array<TextureRegion>(frame);
+		animation=new Animation(0.1f,framesArray, Animation.PlayMode.LOOP_PINGPONG);
+
+		mouse.setAnimation(animation);
+		mouse.setOrigin(mouse.getWidth()/2f,mouse.getHeight()/2f);
+
 		mainStage=new Stage();
 		mainStage.addActor(floor);
 		mainStage.addActor(cheese);
 		mainStage.addActor(mouse);
 		mainStage.addActor(winPanel);
-
-		win=false;
 	}
 
 	@Override
