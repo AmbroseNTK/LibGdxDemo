@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
- * Created by kiettuannguyen on 18/02/2017.
+ * Created by kiettuannguyen on 19/02/2017.
  */
 
 public class BaseActor extends Actor {
