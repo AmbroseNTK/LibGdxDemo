@@ -15,14 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 /**
  * Created by kiettuannguyen on 19/02/2017.
  */
-public class CheeseMenu implements Screen {
+public class CheeseMenu extends BaseScreen {
 
-    private Stage uiStage;
-    private Game game;
 
     public CheeseMenu(Game g) {
-        game=g;
-        create();
+        super(g);
     }
     public void create(){
         BaseActor background=new BaseActor(new Texture("tiles-menu.jpg"));
@@ -42,47 +39,12 @@ public class CheeseMenu implements Screen {
         uiStage.addActor(instructions);
 
     }
-    @Override
-    public void show() {
+    public void update(float dT){
 
     }
-
-    @Override
-    public void render(float delta) {
-
-        inputProcessor();
-        uiStage.act(delta);
-        Gdx.gl.glClearColor(0.8f,0.8f,1,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        uiStage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
-    private void inputProcessor(){
-        if(Gdx.input.isKeyPressed(Input.Keys.S))
+    public boolean keyDown(int keyCode) {
+        if (keyCode == Input.Keys.S)
             game.setScreen(new CheeseLevel(game));
+        return false;
     }
 }

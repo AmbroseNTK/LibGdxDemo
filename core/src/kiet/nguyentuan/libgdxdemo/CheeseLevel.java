@@ -24,11 +24,7 @@ import com.badlogic.gdx.utils.Array;
  * Created by kiettuannguyen on 19/02/2017.
  */
 
-public class CheeseLevel implements Screen {
-
-    public Game game;
-    Stage mainStage;
-    Stage uiStage;
+public class CheeseLevel extends BaseScreen {
 
     Texture mouseTexture;
     Texture cheeseTexture;
@@ -51,13 +47,11 @@ public class CheeseLevel implements Screen {
     float timeElapsed;
 
     final Vector2 map=new Vector2(800,800);
-    final Vector2 window=new Vector2(640,480);
 
     Camera camera;
 
     public CheeseLevel(Game g){
-        game=g;
-        create();
+        super(g);
     }
 
     public void create() {
@@ -112,51 +106,28 @@ public class CheeseLevel implements Screen {
 
 
     }
-
-    @Override
-    public void show() {
-
-    }
-    @Override
-    public void render(float dT) {
-        Gdx.gl.glClearColor(0.8f,0.8f,1,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        mainStage.act(dT);
-        uiStage.act(dT);
+    public void update(float dT){
         checkKeyboard();
         checkWin();
-        checkRender();
-        mainStage.draw();
-        uiStage.draw();
         if(win)
             winPanel.setVisible(true);
         else{
             timeElapsed+=dT;
             timeLabel.setText("Time: "+(int)timeElapsed);
         }
+        checkRender();
     }
-    @Override
-    public void resize(int width, int height) {
-
-    }
-    @Override
-    public void pause() {
-
-    }
-    @Override
-    public void resume() {
-
-    }
-    @Override
-    public void hide() {
-
-    }
-    @Override
-    public void dispose() {
-        mouseTexture.dispose();
-        cheeseTexture.dispose();
-        floorTexture.dispose();
-        winTexture.dispose();
+    public boolean keyDown(int keycode) {
+        if(keycode== Input.Keys.M)
+            game.setScreen(new CheeseMenu(game));
+        if(keycode ==Input.Keys.P) {
+            if(isPaused()) {
+                setPaused(false);
+                return false;
+            }
+            setPaused(true);
+        }
+        return false;
     }
     private void checkKeyboard(){
         mouse.velocity=new Vector2(0,0);
@@ -184,8 +155,8 @@ public class CheeseLevel implements Screen {
         mouse.setX(MathUtils.clamp(mouse.getX(),0,map.x-mouse.getWidth()));
         mouse.setY(MathUtils.clamp(mouse.getY(),0,map.y-mouse.getHeight()));
         camera.position.set(mouse.getX()+mouse.getOriginX(),mouse.getY()+mouse.getOriginY(),0);
-        camera.position.x=MathUtils.clamp(camera.position.x,window.x/2,map.x-window.x/2);
-        camera.position.y=MathUtils.clamp(camera.position.y,window.y/2,map.y-window.y/2);
+        camera.position.x=MathUtils.clamp(camera.position.x,view.x/2,map.x-view.x/2);
+        camera.position.y=MathUtils.clamp(camera.position.y,view.y/2,map.y-view.y/2);
         camera.update();
     }
 }
