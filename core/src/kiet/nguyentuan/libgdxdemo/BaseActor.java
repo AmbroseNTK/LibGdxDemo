@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -75,6 +76,21 @@ public class BaseActor extends Actor {
         boundingPolygon.setPosition(getX(), getY());
         boundingPolygon.setRotation(getRotation());
         return boundingPolygon;
+    }
+    public void setEllipseBoundary()
+    {
+        int n = 8; // number of vertices
+        float w = getWidth();
+        float h = getHeight();
+        float[] vertices = new float[2*n];
+        for (int i = 0; i < n; i++)
+        {
+            float t = i * 6.28f / n;
+            vertices[2*i] = w/2 * MathUtils.cos(t) + w/2;
+            vertices[2*i+1] = h/2 * MathUtils.sin(t) + h/2;
+        }
+            boundingPolygon = new Polygon(vertices);
+        boundingPolygon.setOrigin( getOriginX(), getOriginY() );
     }
 
     public boolean overlaps(BaseActor other, boolean resolve) {

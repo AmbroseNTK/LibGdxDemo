@@ -13,70 +13,68 @@ import java.util.HashMap;
  */
 
 public class AnimateActor extends BaseActor {
-    public float elapseTime;
-    public Animation animation;
-    private String activeName;
+    private float elapsedTime;
     private Animation activeAnim;
-    private HashMap<String,Animation> animationHashMap;
-    public AnimateActor(){
+    private String activeName;
+    private HashMap<String,Animation> animationStorage;
+
+    public AnimateActor()
+    {
         super();
-        elapseTime=0;
-        activeAnim=null;
-        activeName=null;
-        animationHashMap=new HashMap<String, Animation>();
+        elapsedTime = 0;
+        activeAnim = null;
+        activeName = null;
+        animationStorage = new HashMap<String,Animation>();
     }
-    public void storageAnimtion(String name, Animation anim){
-        animationHashMap.put(name, anim);
-        if(activeAnim==null){
+
+    public void storeAnimation(String name, Animation anim)
+    {
+        animationStorage.put(name, anim);
+        if (activeName == null)
             setActiveAnimation(name);
-        }
     }
-    public void storageAnimation(String name, Texture tex)
+
+    public void storeAnimation(String name, Texture tex)
     {
         TextureRegion reg = new TextureRegion(tex);
         TextureRegion[] frames = { reg };
         Animation anim = new Animation(1.0f, frames);
-        storageAnimtion(name, anim);
+        storeAnimation(name, anim);
     }
+
     public void setActiveAnimation(String name)
     {
-        if ( !animationHashMap.containsKey(name) )
+        if ( !animationStorage.containsKey(name) )
         {
             System.out.println("No animation: " + name);
             return;
         }
-        // no need to set animation if already running
-        if ( activeName.equals(name) )
-            return;
+
         activeName = name;
-        activeAnim = animationHashMap.get(name);
-        elapseTime = 0;
-        Texture tex=(Texture)animation.getKeyFrame(0);
+        activeAnim = animationStorage.get(name);
+        elapsedTime = 0;
+
+        TextureRegion texReg = (TextureRegion)(activeAnim.getKeyFrame(0));
+        Texture tex=texReg.getTexture();
         setWidth( tex.getWidth() );
         setHeight( tex.getHeight() );
     }
+
     public String getAnimationName()
     {
         return activeName;
     }
-    public AnimateActor(Texture texture){
-        super(texture);
-        elapseTime=0;
+
+    public void act(float dt)
+    {
+        super.act( dt );
+        elapsedTime += dt;
     }
-    public void setAnimation(Animation a){
-        TextureRegion t=(TextureRegion)a.getKeyFrame(0);
-        setTexture(t.getTexture());
-        animation=a;
-    }
-    public void act(float dT){
-        super.act(dT);
-        elapseTime +=dT;
-        if(velocity.x!=0||velocity.y!=0)
-            setRotation(MathUtils.atan2(velocity.y,velocity.x)*MathUtils.radiansToDegrees);
-    }
-    public void draw(Batch batch, float parentAlpha){
-        textureRegion.setRegion((TextureRegion) animation.getKeyFrame(elapseTime));
-        super.draw(batch,parentAlpha);
+
+    public void draw(Batch batch, float parentAlpha)
+    {
+        textureRegion.setRegion( (TextureRegion) activeAnim.getKeyFrame(elapsedTime) );
+        super.draw(batch, parentAlpha);
     }
 
 }

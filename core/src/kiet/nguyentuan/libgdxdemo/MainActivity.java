@@ -11,6 +11,8 @@ public class MainActivity extends Game {
 
 	@Override
 	public void create () {
-
+		TurtleLevel turtleLevel=new TurtleLevel(this);
+		turtleLevel.resize(800,600);
+		setScreen(turtleLevel);
 	}
 }
